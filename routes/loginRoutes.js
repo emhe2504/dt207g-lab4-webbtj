@@ -5,3 +5,5 @@ const authenticationToken = require("../middleware/authenticationToken.js");
 const jwt = require("jsonwebtoken");
 
 const route = express.Router();
+
+module.exports = route;

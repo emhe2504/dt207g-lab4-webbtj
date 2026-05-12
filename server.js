@@ -1,8 +1,12 @@
 //Importera paket
 const express = require("express");
 const cors = require("cors");
-const monggose = require("mongoose");
-require("dotenv").config;   //Läs in variabler från .env-fil
+const mongoose = require("mongoose");
+require("dotenv").config();   //Läs in variabler från .env-fil
+
+//Läsa in routes
+const loginRoutes = require("./routes/loginRoutes");
+const guestbookRoutes = require("./routes/guestbookRoutes");
 
 //Express-instans
 const app = express();
@@ -20,8 +24,8 @@ app.use(cors());    //Tillåt cross-origin
 app.use(express.json());
 
 //Routes
-app.use("/login", loginRoutes)
-app.use("/guestbook", guestbookRoutes)
+app.use("/login", loginRoutes);
+app.use("/guestbook", guestbookRoutes);
 
 
 app.listen(port, () => {
