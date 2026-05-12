@@ -2,7 +2,6 @@
 const express = require("express");
 const Authentication = require("../models/authentication.model.js");
 const authenticationToken = require("../middleware/authenticationToken.js");
-const jwt = require("jsonwebtoken");
 
 const route = express.Router();
 
@@ -10,11 +9,11 @@ const route = express.Router();
 
 route.get("/", async (req, res) => {
     try {
-        let result = await Authentication.find({}, {password: 0});  //För säkerhet, visa inte lösen
+        let result = await Authentication.find({}, { password: 0 });  //För säkerhet, visa inte lösen
         res.json(result);
 
-    } catch(error) {
-        res.status(500).json( {error: "Server error"});
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
     }
 })
 
@@ -25,25 +24,39 @@ route.get("/:id", async (req, res) => {
 
         let result = await Authentication.findById(ID);      //Hitta spcifikt arbete utefter id
 
-        if (!result) { return res.status(500).json({ message: "Kunde inte hitta work med matchande ID" }) }
+        if (!result) { return res.status(500).json({ message: "Could not find user with matching ID" }) }
         return res.json(result);
 
     } catch (error) {
-        return res.status(500).json({ message: "Could not find work" });
+        return res.status(500).json({ message: "Could not find user" });
     }
 });
 
-module.exports = route;
+route.post("/register", async (req, res) => {
 
-/**
- *  //Validera input
-        if(!email) { 
+    try {
+        const { email, password } = req.body;
+        const errors = [];
+
+        //Validera input
+        if (!email) {
             errors.push("Ange epost-adress");
-            return res.status(400).json({ error: "Incorrect input, forgot email"})
+            return res.status(400).json({ errors })
         };
 
-        if(!password) { 
+        if (!password) {
             errors.push("Ange lösenord");
-            return res.status(400).json({ error: "Incorrect input, forgot password"})
+            return res.status(400).json({ errors })
         };
- */
+
+        const registeredUser = new Authentication( {email, password});
+        await registeredUser.save();
+        res.status(201).json({ message: "User created"});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error"});
+    }
+})
+
+module.exports = route;
