@@ -2,6 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const monggose = require("mongoose");
+require("dotenv").config;   //Läs in variabler från .env-fil
 
 //Express-instans
 const app = express();
