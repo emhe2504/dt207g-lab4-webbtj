@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();   //Läs in variabler från .env-fil
 
 //Läsa in routes
-const loginRoutes = require("./routes/loginRoutes");
+const authenticationRoutes = require("./routes/authenticationRoutes");
 const guestbookRoutes = require("./routes/guestbookRoutes");
 
 //Express-instans
@@ -24,7 +24,7 @@ app.use(cors());    //Tillåt cross-origin
 app.use(express.json());
 
 //Routes
-app.use("/login", loginRoutes);
+app.use("/api", authenticationRoutes);
 app.use("/guestbook", guestbookRoutes);
 
 

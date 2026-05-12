@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 //loginSchema
-const loginSchema = new mongoose.Schema({
+const authenticationSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, "Ange email"],
@@ -20,6 +20,6 @@ const loginSchema = new mongoose.Schema({
 });
 
 //Inkludera Schema till databas
-const Guestbook = mongoose.model("Guestbook", guestbookSchema);
+const Authentication = mongoose.model("Authentication", authenticationSchema);
 
-module.exports = Guestbook;
+module.exports = Authentication;
