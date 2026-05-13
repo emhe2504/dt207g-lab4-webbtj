@@ -96,14 +96,14 @@ route.post("/login", async (req, res) => {
 
         //Kontrollera om en registrerad användare finns
         if (!registeredUser) {
-            return res.status(401).json({ message: "Incorrect email" });
+            return res.status(401).json({ message: "Angiven e-postadress är ej korrekt" });
         }
 
         const correctPassword = await registeredUser.comparePassword(password);
 
         //Kontrollera om angivet lösenord är korrekt
         if (!correctPassword) {
-            return res.status(401).json({ message: "Incorrect password" });
+            return res.status(401).json({ message: "Angivet lösenord är ej korrekt" });
         }
 
         //Skapa jwt-token
