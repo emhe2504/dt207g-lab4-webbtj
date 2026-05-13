@@ -9,7 +9,7 @@ const route = express.Router();
 route.get("/", async (req, res) => {
 
     try {
-        let result = await Guestbook.find({});  
+        let result = await Guestbook.find({});
         res.json(result);
 
     } catch (error) {
@@ -34,11 +34,18 @@ route.get("/:id", async (req, res) => {
 route.post("/", async (req, res) => {
 
     try {
-        let result = await Guestbook.create(req.body); 
+        let result = await Guestbook.create(req.body);
         return res.json(result);
 
     } catch (error) {
-        return res.status(500).json(error);
+        if (error.name === "ValidationError") {      //Om valideringsfel, t ex. något saknas
+
+            const errorMessages = Object.values(error.errors).map(err => err.message);   //object.values(error.errors) returnerar array med valideringsfel-objekt
+
+            return res.status(400).json({ message: errorMessages });
+
+        }
+        return res.status(500).json( { message: "Server error" } );
     }
 })
 
@@ -48,8 +55,24 @@ route.put("/:id", async (req, res) => {
         const id = req.params.id;
         const newData = req.body;
 
-        let result = await Guestbook.UpdateOne( { _id: id }, { $set: newData}, { runValidators: true });  //Kör validering, så ny input blir korrekt
-        
+       //HÄR BEHÖVS KONTROLL!
+       
+        let result = await Guestbook.updateOne({ _id: id }, { $set: newData });
+        return res.json(result);
+
+    } catch (error) {
+        return res.status(500).json( { message: "Server error" } );
+    }
+})
+
+route.delete("/:id", async (req, res) => {
+
+    try {
+        const id = req.params.id;
+
+        let result = await Guestbook.deleteOne({ _id: id });  //Radera efter id
+        return res.json(result);
+
     } catch (error) {
 
         return res.status(400).json(error);
