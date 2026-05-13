@@ -79,11 +79,15 @@ route.delete("/:id", authenticationToken, async (req, res) => {
         const id = req.params.id;
 
         let result = await Guestbook.deleteOne({ _id: id });  //Radera efter id
-        return res.json(result);
+        if (result.deletedCount === 1) {
+            return res.json({ Deleted: "Guestbook with id: " + id });
+        }
+        else {
+            return res.json({ Deleted: "Could not delete guestbook with id: " + id });
+        }
 
     } catch (error) {
-
-        return res.status(400).json(error);
+        return res.status(400).json({ error: error.reason.message});
     }
 })
 
