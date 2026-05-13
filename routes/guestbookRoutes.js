@@ -31,7 +31,7 @@ route.get("/:id", async (req, res) => {
     }
 })
 
-route.post("/", async (req, res) => {
+route.post("/", authenticationToken, async (req, res) => {
 
     try {
         let result = await Guestbook.create(req.body);
@@ -45,27 +45,35 @@ route.post("/", async (req, res) => {
             return res.status(400).json({ message: errorMessages });
 
         }
-        return res.status(500).json( { message: "Server error" } );
+        return res.status(500).json({ message: "Server error" });
     }
 })
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", authenticationToken, async (req, res) => {
 
     try {
         const id = req.params.id;
         const newData = req.body;
 
-       //HÄR BEHÖVS KONTROLL!
-       
-        let result = await Guestbook.updateOne({ _id: id }, { $set: newData });
+        let result = await Guestbook.updateOne({ _id: id }, { $set: newData }, { runValidators: true });
         return res.json(result);
 
     } catch (error) {
-        return res.status(500).json( { message: "Server error" } );
+
+        //Samma kontroll som post
+
+        if (error.name === "ValidationError") {
+
+            const errorMessages = Object.values(error.errors).map(err => err.message);
+
+            return res.status(400).json({ message: errorMessages });
+
+        }
+        return res.status(500).json({ message: "Server error" });
     }
 })
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", authenticationToken, async (req, res) => {
 
     try {
         const id = req.params.id;
