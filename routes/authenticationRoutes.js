@@ -96,14 +96,14 @@ route.post("/login", async (req, res) => {
 
         //Kontrollera om en registrerad användare finns
         if (!registeredUser) {
-            return res.status(401).json({ message: "Incorrect email or password" });
+            return res.status(401).json({ message: "Incorrect email" });
         }
 
         const correctPassword = await registeredUser.comparePassword(password);
 
         //Kontrollera om angivet lösenord är korrekt
         if (!correctPassword) {
-            return res.status(401).json({ message: "Incorrect email or password" });
+            return res.status(401).json({ message: "Incorrect password" });
         }
 
         //Skapa jwt-token
@@ -120,6 +120,23 @@ route.post("/login", async (req, res) => {
         }
 
         return res.status(200).json(response);
+
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+})
+
+route.delete("/:id", authenticationToken, async (req, res) => {
+
+    try {
+        const id = req.params.id;
+        let result = await Authentication.deleteOne({ _id: id });     //Radera work där id = req.params.id
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: "Could not delete registered user, no matching id" });    //om inget raderades
+        }
+
+        return res.json({ message: "Registered user with id: " + req.params.id + " deleted" });    //om radering lyckats
 
     } catch (error) {
         return res.status(500).json(error);
