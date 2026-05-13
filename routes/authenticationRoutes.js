@@ -24,7 +24,7 @@ route.get("/:id", authenticationToken, async (req, res) => {
 
         const ID = req.params.id;
 
-        let result = await Authentication.findById(ID, { password: 0 });      //Hitta spcifikt arbete utefter id
+        let result = await Authentication.findById(ID, { password: 0 });      //Hitta spcifikt registrerad användare utefter id
 
         if (!result) { return res.status(500).json({ message: "Could not find user with matching ID" }) }
         return res.json(result);
