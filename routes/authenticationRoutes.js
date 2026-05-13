@@ -8,7 +8,7 @@ const route = express.Router();
 
 
 //GET - hämta alla användare
-route.get("/", async (req, res) => {
+route.get("/", authenticationToken, async (req, res) => {
     try {
         let result = await Authentication.find({}, { password: 0 });  //För säkerhet, visa inte lösen
         res.json(result);
@@ -19,7 +19,7 @@ route.get("/", async (req, res) => {
 })
 
 //GET - hämta användare med specifikt id
-route.get("/:id", async (req, res) => {
+route.get("/:id", authenticationToken, async (req, res) => {
     try {
 
         const ID = req.params.id;
@@ -83,7 +83,7 @@ route.post("/login", async (req, res) => {
         }
 
         //Skapa jwt-token
-        const payload = { email: email, id: _id };  //Payload läggs in i token
+        const payload = { email: email, id: registeredUser._id };  //Payload läggs in i token
         const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "24h" }); //Hemlig nyckel används för att skapa signatur
 
         //Hämta användare igen, utan lösenord
@@ -91,7 +91,7 @@ route.post("/login", async (req, res) => {
         registeredUser = await Authentication.findOne( { email: email }, { password: 0 });
 
         const response = {
-            user,
+            registeredUser,
             token
         }
 
