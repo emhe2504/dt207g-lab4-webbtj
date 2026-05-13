@@ -15,6 +15,8 @@ function authenticateToken(req, res, next) {    //Next "nu kan du köra resten a
     });
 }
 
+module.exports = authenticateToken;
+
 /**
  * Kommentar för egen del, förståelse:
  * 1. Användaren loggar in

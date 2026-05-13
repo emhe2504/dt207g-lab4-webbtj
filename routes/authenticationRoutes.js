@@ -34,12 +34,29 @@ route.get("/:id", authenticationToken, async (req, res) => {
     }
 });
 
+route.put("/:id", authenticationToken, async (req, res) => {
+
+    try {
+        const id = req.params.id;
+        const newData = req.body;
+
+        //Där id = req.params.id, sätt in den nya req.body (true på validering - required)
+        let result = await Authentication.updateOne({ _id: id }, { $set: newData }, { runValidators: true });
+        return res.json(result);
+
+    } catch (error) {
+
+        return res.status(400).json(error);
+    }
+})
+
 //POST route för att registrera användare
 route.post("/register", async (req, res) => {
 
+    const errors = [];
+
     try {
         const { email, password } = req.body;
-        const errors = [];
 
         //Validera input
         if (!email) {
@@ -56,8 +73,15 @@ route.post("/register", async (req, res) => {
         await registeredUser.save();
         res.status(201).json({ message: "User created" });
 
+
     } catch (error) {
-        console.log(error);
+
+        if (error.errorResponse.code === 11000) {
+            errors.push("Email-adressen är upptagen")
+            console.log(errors)
+            return res.status(500).json({ message: errors })
+        }
+
         res.status(500).json({ message: "Server error" });
     }
 })
@@ -88,7 +112,7 @@ route.post("/login", async (req, res) => {
 
         //Hämta användare igen, utan lösenord
 
-        registeredUser = await Authentication.findOne( { email: email }, { password: 0 });
+        registeredUser = await Authentication.findOne({ email: email }, { password: 0 });
 
         const response = {
             registeredUser,
