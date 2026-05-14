@@ -71,7 +71,7 @@ route.post("/register", async (req, res) => {
 
         const registeredUser = new Authentication({ email, password });
         await registeredUser.save();
-        res.status(201).json({ message: "User created" });
+        res.status(201).json({ message: "Användare skapad" });
 
 
     } catch (error) {

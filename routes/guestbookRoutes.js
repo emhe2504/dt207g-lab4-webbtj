@@ -87,7 +87,7 @@ route.delete("/:id", authenticationToken, async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(400).json({ error: error.reason.message});
+        return res.status(400).json({ error: error.reason.message });
     }
 })
 
